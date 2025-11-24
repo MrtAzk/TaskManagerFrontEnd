@@ -23,5 +23,5 @@ export const useProjectQuery =()=>{
             })
         }
     })
-    return findAll ;
+    return {findAll,addProject} ;
 }

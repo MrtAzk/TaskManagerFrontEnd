@@ -8,7 +8,7 @@ const Main = ({ sidebar,projectTasks }) => {
                 {sidebar}
             </div>
             {/*Project-Tasks */}
-            <div>
+            <div className='flex-1'>
                 {projectTasks}
             </div>
         </main>

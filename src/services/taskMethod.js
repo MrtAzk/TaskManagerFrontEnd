@@ -14,3 +14,13 @@ export const listTask=async(query)=>{
         
     }
 }
+
+export const createTask =async(val)=>{
+    try {
+        const res = await instance.post("v1/tasks",val)
+        return res.data;
+    } catch (error) {
+        console.error("Task  yaratılırken hata oluştu:", error);
+        throw error;
+    }
+}

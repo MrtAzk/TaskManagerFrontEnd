@@ -1,14 +1,28 @@
 import { useParams } from "react-router-dom";
 import { useTasksQuery } from "../queries/useTasksQuery";
 import { isPastDue } from "../utils/isPastDue";
+import { useContext } from "react";
+import { ModalContext } from "../context/ModalContext";
+import { AiOutlinePlus } from 'react-icons/ai';
+import CreateModalTask from "../modal/CreateModalTask";
 
 const ProjectTasks = () => {
 
     const params = useParams()
     const projectId = params.id ? Number(params.id) : null;
-
-    const { data, isLoading, isError } = useTasksQuery(projectId)
+    const taskResults = useTasksQuery(projectId)
+    const { data, isLoading, isError } = taskResults.findProjectTasks
     const tasks = data?.content
+
+    const useModalContext = useContext(ModalContext)
+
+    const handleCreateTask = () => {
+        useModalContext.appear({
+            title: "Task Ekle",
+            modalContent: CreateModalTask
+        })
+
+    }
 
 
     // 1. Yüklenme Durumu
@@ -41,10 +55,15 @@ const ProjectTasks = () => {
 
     // 4. Görev Listesi Boşsa
     if (tasks.length === 0) {
-        return (
+        return (<div>
             <div className="p-8 text-center text-xl text-gray-500 bg-yellow-50 border border-yellow-200 rounded-lg">
                 ⚠️ Bu projeye ait henüz tanımlanmış bir görev bulunmamaktadır.
+
             </div>
+            <button onClick={handleCreateTask}>Task ekle </button>
+        </div>
+
+
         );
     }
 
@@ -52,6 +71,13 @@ const ProjectTasks = () => {
     return (
         <div className="space-y-4">
             <h2 className="text-3xl font-bold text-gray-800 border-b pb-2">📋 Proje Görevleri ({tasks.length})</h2>
+            <button 
+            onClick={handleCreateTask}
+            className="px-6 py-2 bg-green-600 text-white rounded-lg flex items-center space-x-3"
+        >
+            <AiOutlinePlus className="h-5 w-5" /> 
+            <span>Yeni Task Ekle</span>
+        </button>
 
             {tasks.map((task) => {
                 // Görevin vadesi geçmiş mi?
@@ -74,7 +100,7 @@ const ProjectTasks = () => {
                             <span className="text-sm text-gray-500">{task.description}</span>
                         </div>
                         <div className={`px-3 py-1 text-sm font-medium rounded-full ${statusClasses()}`}>
-                            {isOverdue ? 'VADESİ GEÇTİ' : 'DEVAM EDİYOR'}:({isOverdue ? "":task.dueDate})
+                            {isOverdue ? 'VADESİ GEÇTİ' : 'DEVAM EDİYOR'}:({task.dueDate})
                         </div>
                     </div>)
             })}

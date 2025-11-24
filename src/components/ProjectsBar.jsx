@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 const ProjectsBar = () => {
 
-    const { data, isLoading, isError, error } = useProjectQuery();
+    const projectResult = useProjectQuery();
+    const { data, isLoading, isError, error } = projectResult.findAll;
 
     const navigate = useNavigate()
 
@@ -33,6 +34,7 @@ const ProjectsBar = () => {
 
 
     return (
+
         <div className="space-y-1">
             <h3 className="text-lg font-bold border-b border-amber-700 pb-2 mb-2">
                 Tüm Projeler ({projectList.length})
@@ -47,7 +49,7 @@ const ProjectsBar = () => {
                     onClick={() => {
                         navigate("/project/" + project.id);
                     }}
-                >   
+                >
                     {project.name || `Proje #${project.id}`}
                 </div>
             ))}
