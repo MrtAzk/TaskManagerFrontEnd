@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { ModalContext } from "../context/ModalContext";
 import { AiOutlinePlus } from 'react-icons/ai';
 import CreateModalTask from "../modal/CreateModalTask";
+import UpdateModalTask from "../modal/UpdateModalTask";
 
 const ProjectTasks = () => {
 
@@ -21,6 +22,25 @@ const ProjectTasks = () => {
             title: "Task Ekle",
             modalContent: CreateModalTask
         })
+
+    }
+
+    const handleDeleteTask = (id) => {
+        taskResults.removeTask.mutateAsync({
+            taskId: id,
+            projectId: projectId // bunu yollama sebebim invalidate qury düzgün çalışsın diye 
+        })
+    }
+
+        const handleUpdateTask = (taskId) => {
+        useModalContext.appear({
+            title: "Task Güncelleme",
+            modalContent: UpdateModalTask,
+            props: {
+            taskIdToUpdate: taskId // Task'ın ID'sini prop olarak gönderdik
+        }
+        })
+
 
     }
 
@@ -60,7 +80,13 @@ const ProjectTasks = () => {
                 ⚠️ Bu projeye ait henüz tanımlanmış bir görev bulunmamaktadır.
 
             </div>
-            <button onClick={handleCreateTask}>Task ekle </button>
+            <button
+                onClick={handleCreateTask}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg flex items-center space-x-3"
+            >
+                <AiOutlinePlus className="h-5 w-5" />
+                <span>Yeni Task Ekle</span>
+            </button>
         </div>
 
 
@@ -71,13 +97,13 @@ const ProjectTasks = () => {
     return (
         <div className="space-y-4">
             <h2 className="text-3xl font-bold text-gray-800 border-b pb-2">📋 Proje Görevleri ({tasks.length})</h2>
-            <button 
-            onClick={handleCreateTask}
-            className="px-6 py-2 bg-green-600 text-white rounded-lg flex items-center space-x-3"
-        >
-            <AiOutlinePlus className="h-5 w-5" /> 
-            <span>Yeni Task Ekle</span>
-        </button>
+            <button
+                onClick={handleCreateTask}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg flex items-center space-x-3"
+            >
+                <AiOutlinePlus className="h-5 w-5" />
+                <span>Yeni Task Ekle</span>
+            </button>
 
             {tasks.map((task) => {
                 // Görevin vadesi geçmiş mi?
@@ -93,14 +119,19 @@ const ProjectTasks = () => {
                 return (
                     <div
                         key={task.id}
-                        className="bg-white p-5 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex justify-between items-center border-l-4 border-blue-500"
+                        className="bg-white  rounded-lg shadow-md hover:shadow-lg transition duration-200 flex justify-between items-stretch m-3 "
                     >
-                        <div className="flex flex-col">
-                            <span className="text-lg font-semibold text-gray-800">{task.title}</span>
+                        <div className="flex flex-row justify-between flex-1 p-5">
+                            <span className="text-lg font-semibold text-gray-800 ">{task.name}</span>
                             <span className="text-sm text-gray-500">{task.description}</span>
+
+                            <div className={`px-3 py-1 text-sm font-medium rounded-full mr-3 ${statusClasses()}`}>
+                                {isOverdue ? 'VADESİ GEÇTİ' : 'DEVAM EDİYOR'}:({task.dueDate})
+                            </div>
                         </div>
-                        <div className={`px-3 py-1 text-sm font-medium rounded-full ${statusClasses()}`}>
-                            {isOverdue ? 'VADESİ GEÇTİ' : 'DEVAM EDİYOR'}:({task.dueDate})
+                        <div className="flex items-center justify-center ml-4">
+                            <button className="text-white bg-red-500 hover:bg-red-600 font-semibold w-24 h-full rounded  " onClick={() => handleDeleteTask(task.id)}>Sil</button>
+                            <button className="text-white bg-green-500 hover:bg-green-600 font-semibold w-24 h-full rounded  " onClick={() =>handleUpdateTask(task.id)}>Düzenle</button>
                         </div>
                     </div>)
             })}
