@@ -28,3 +28,15 @@ export const createProject = async (data) => {
 
     }
 }
+
+export const deleteProject = async (id) => {
+    try {
+        const res = await instance.delete(`v1/projects/${id}`)
+        return res.data
+
+    } catch (error) {
+        console.error("Proje  silinirken hata oluştu:", error);
+        throw error;
+
+    }
+}

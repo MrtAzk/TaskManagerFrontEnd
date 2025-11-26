@@ -5,6 +5,7 @@ import * as yup from "yup";
 import { ModalContext } from '../context/ModalContext';
 import { useTasksQuery } from '../queries/useTasksQuery';
 import { useParams } from 'react-router-dom';
+import Confirmation from './Confirmation';
 
 
 const CreateModalTask = ({ modalId }) => {
@@ -29,26 +30,47 @@ const CreateModalTask = ({ modalId }) => {
 
 
     const onSub = (data) => {
+
         const dateObj = new Date(data.dueDate);
-        
+
         const day = String(dateObj.getDate()).padStart(2, '0');      // 5 -> 05 yapar
         const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Aylar 0'dan başlar!
         const year = dateObj.getFullYear();
 
         const formattedDate = `${day}-${month}-${year}`; // Örn: 25-11-2025
 
-        // Orijinal veriyi bozmadan, tarihi güncelleyip yeni bir obje yapıyoruz
-        const payload = {
-            ...data,
-            projectId:Number(useModalContext.currentProjectId),
-            dueDate: formattedDate
 
-        };
 
-        console.log(payload)
-        useModalContext.disAppear(modalId)
-        addTask.mutateAsync(payload)
-        reset();
+
+        const handleConfirm = () => {
+
+
+            // Orijinal veriyi bozmadan, tarihi güncelleyip yeni bir obje yapıyoruz
+            const payload = {
+                ...data,
+                projectId: Number(useModalContext.currentProjectId),
+                dueDate: formattedDate
+
+            }
+
+            useModalContext.disAppear(modalId)
+            addTask.mutateAsync(payload)
+            reset();
+
+        }
+
+        useModalContext.appear({
+            title: "Yaratma Onayı",
+            modalContent: Confirmation,
+            props: {
+                message: "Bu görevi yaratmak  istediğinizden eminmisiniz",
+                onConfirm: handleConfirm,
+                onCancel: useModalContext.disAppear//referans gidecek sadece 
+            }
+
+        })
+
+
     }   
 
     const inputClass ="w-full border border-gray-300 p-2 rounded-lg shadow-sm focus:border-blue-500 mb-3"

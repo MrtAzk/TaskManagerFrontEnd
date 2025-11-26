@@ -6,6 +6,7 @@ import { ModalContext } from "../context/ModalContext";
 import { AiOutlinePlus } from 'react-icons/ai';
 import CreateModalTask from "../modal/CreateModalTask";
 import UpdateModalTask from "../modal/UpdateModalTask";
+import Confirmation from "../modal/Confirmation";
 
 const ProjectTasks = () => {
 
@@ -14,6 +15,7 @@ const ProjectTasks = () => {
     const taskResults = useTasksQuery(projectId)
     const { data, isLoading, isError } = taskResults.findProjectTasks
     const tasks = data?.content
+    
 
     const useModalContext = useContext(ModalContext)
 
@@ -26,9 +28,29 @@ const ProjectTasks = () => {
     }
 
     const handleDeleteTask = (id) => {
-        taskResults.removeTask.mutateAsync({
+
+
+        const handleConfirm=(onConfirmModalId)=>{
+
+            useModalContext.disAppear(onConfirmModalId)
+
+            taskResults.removeTask.mutateAsync({
             taskId: id,
             projectId: projectId // bunu yollama sebebim invalidate qury düzgün çalışsın diye 
+        })
+
+        }
+
+
+        useModalContext.appear({
+            title:"Silme Onayı",
+            modalContent:Confirmation,
+            props:{
+                message:"Bu görevi silmek istediğinizden eminmisiniz",
+                onConfirm:handleConfirm,
+                onCancel:useModalContext.disAppear//referans gidecek sadece 
+            }
+
         })
     }
 
@@ -129,9 +151,9 @@ const ProjectTasks = () => {
                                 {isOverdue ? 'VADESİ GEÇTİ' : 'DEVAM EDİYOR'}:({task.dueDate})
                             </div>
                         </div>
-                        <div className="flex items-center justify-center ml-4">
-                            <button className="text-white bg-red-500 hover:bg-red-600 font-semibold w-24 h-full rounded  " onClick={() => handleDeleteTask(task.id)}>Sil</button>
-                            <button className="text-white bg-green-500 hover:bg-green-600 font-semibold w-24 h-full rounded  " onClick={() =>handleUpdateTask(task.id)}>Düzenle</button>
+                        <div className="flex items-center justify-center ml-4 gap-2">
+                            <button className="text-white bg-red-500 hover:bg-red-600 font-semibold w-24 h-full rounded cursor-pointer  " onClick={() => handleDeleteTask(task.id)}>Sil</button>
+                            <button className="text-white bg-green-500 hover:bg-green-600 font-semibold w-24 h-full rounded cursor-pointer  " onClick={() =>handleUpdateTask(task.id)}>Düzenle</button>
                         </div>
                     </div>)
             })}
