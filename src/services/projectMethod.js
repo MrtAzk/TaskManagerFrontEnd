@@ -1,8 +1,24 @@
 import axios from "axios";
 
 export const instance = axios.create({
-    baseURL: "http://localhost:8080"
+    baseURL: 'http://localhost:8080'
 });
+
+// 💡 Interceptor (Kesici) Ekleme
+instance.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('jwtToken'); 
+        
+        if (token) {
+            // Token'ı trim'leyerek Header'a ekle (boşluk hatasını önler)
+            config.headers.Authorization = `Bearer ${token.trim()}`; 
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export const listProject = async (query) => {
     try {
@@ -23,7 +39,7 @@ export const createProject = async (data) => {
         return res.data
 
     } catch (error) {
-        console.error("Proje  yaratılırken hata oluştu:", error);
+        console.error("Proje  yaratılırken hata oluştu:" ,error.response?.data || error.message);
         throw error;
 
     }
@@ -35,7 +51,7 @@ export const deleteProject = async (id) => {
         return res.data
 
     } catch (error) {
-        console.error("Proje  silinirken hata oluştu:", error);
+        console.error("Proje  silinirken hata oluştu:", error.response?.data || error.message);
         throw error;
 
     }

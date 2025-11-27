@@ -3,7 +3,21 @@ import axios from "axios";
 export const instance =axios.create({
     baseURL:"http://localhost:8080"
 });
-
+// 💡 Interceptor (Kesici) Ekleme
+instance.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('jwtToken'); 
+        
+        if (token) {
+            // Token'ı trim'leyerek Header'a ekle (boşluk hatasını önler)
+            config.headers.Authorization = `Bearer ${token.trim()}`; 
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 export const listTask=async(query)=>{
     try {
         const res=await instance.get("v1/tasks",{params:query});

@@ -5,6 +5,8 @@ export const useProjectQuery =()=>{
 
     const queryClient=useQueryClient();
 
+    
+
     const findAll =useQuery({
         queryKey :["projects"],
         queryFn: async()=>{

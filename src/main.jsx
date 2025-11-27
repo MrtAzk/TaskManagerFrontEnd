@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ProjectView from './pages/projectView.jsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ModalProvider } from './context/ModalContext.jsx'
+import LoginPage from './pages/LoginPage.jsx'
+import ProtectRoute from './pages/ProtectRoute.jsx'
 const queryClient = new QueryClient()
 
 
@@ -13,8 +15,10 @@ createRoot(document.getElementById('root')).render(
     <ModalProvider>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<ProjectView />} />
-          <Route path='/project/:id' element={<ProjectView />} />
+          <Route path='/' element={<LoginPage/>}/>
+          <Route path='/login' element={<LoginPage/>}/>
+          <Route path='/projects' element={<ProtectRoute element={ProjectView } />} />
+          <Route path='/project/:id' element={<ProtectRoute element={ProjectView } />} />
         </Routes>
       </BrowserRouter>
     </ModalProvider>
