@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useUserQuery } from '../queries/useUserQuery';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 // 💡 Schema: Hem login hem de signup için geçerli temel doğrulama
 const schema = yup.object({
@@ -29,19 +30,20 @@ const AuthForm = ({ isSignup }) => {
             const responseData = await mutation.mutateAsync(data);
 
             if (!isSignup && responseData?.token) {
+                toast.success(`Hoş geldiniz, ${responseData.username}!`)
 
                 navigate('/projects');
             }
             else if (isSignup) {
 
-                alert('Kayıt başarılı! Lütfen giriş yapın.');
+                toast.success('Kayıt işlemi başarılı! Giriş yapabilirsiniz.');
                 // Kayıt başarılıysa Login ekranına dön.
                 navigate('/login');
             }
 
         } catch (error) {
             console.error("Auth işleminde hata:", error.response?.data);
-            alert(`Giriş başarısız: ${error.response?.data?.message || 'Kullanıcı adı veya şifre hatalı.'}`);
+            toast.error(`Giriş başarısız: ${error.response?.data?.message || 'Kullanıcı adı veya şifre hatalı.'}`)
 
         }
 

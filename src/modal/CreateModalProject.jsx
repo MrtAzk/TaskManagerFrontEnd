@@ -5,6 +5,7 @@ import * as yup from "yup";
 import { ModalContext } from '../context/ModalContext';
 import { useProjectQuery } from '../queries/useProjectsQuery';
 import Confirmation from './Confirmation';
+import { toast } from 'react-toastify';
 
 const CreateModalProject = ({ modalId }) => {
 
@@ -24,9 +25,10 @@ const CreateModalProject = ({ modalId }) => {
 
     const onSub = (data) => {
 
-        const handleConfirm = () => {
+        const handleConfirm = async() => {
             useModalContext.disAppear(modalId)
-            addProject.mutateAsync(data)
+            await addProject.mutateAsync(data)
+            toast.success("Proje yaratıldı")
             reset();
 
         }

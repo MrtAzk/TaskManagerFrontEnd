@@ -6,6 +6,7 @@ import { ModalContext } from '../context/ModalContext';
 import { useTasksQuery } from '../queries/useTasksQuery';
 import { useParams } from 'react-router-dom';
 import Confirmation from './Confirmation';
+import { toast } from 'react-toastify';
 
 
 const CreateModalTask = ({ modalId }) => {
@@ -42,7 +43,7 @@ const CreateModalTask = ({ modalId }) => {
 
 
 
-        const handleConfirm = () => {
+        const handleConfirm = async () => {
 
 
             // Orijinal veriyi bozmadan, tarihi güncelleyip yeni bir obje yapıyoruz
@@ -54,7 +55,8 @@ const CreateModalTask = ({ modalId }) => {
             }
 
             useModalContext.disAppear(modalId)
-            addTask.mutateAsync(payload)
+            await addTask.mutateAsync(payload)
+            toast.success("Task Oluşturuldu")
             reset();
 
         }

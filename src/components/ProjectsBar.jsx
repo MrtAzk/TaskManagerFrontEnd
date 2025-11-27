@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { ModalContext } from '../context/ModalContext';
 import Confirmation from '../modal/Confirmation';
+import { toast } from 'react-toastify';
 
 
 const ProjectsBar = () => {
@@ -16,12 +17,13 @@ const ProjectsBar = () => {
 
     const handleDelete = (id) => {
 
-        const handleConfirm = (onConfirmModalId) => {
+        const handleConfirm = async(onConfirmModalId) => {
             useModalContext.disAppear(onConfirmModalId)
-            projectResult.removeProject.mutateAsync(id)
+            await projectResult.removeProject.mutateAsync(id)
+            toast.success("Proje başarıyla silindi!");
         }
-
-        useModalContext.appear({
+            
+          useModalContext.appear({
             title: "Silem Onayı",
             modalContent: Confirmation,
             props: {
@@ -31,6 +33,8 @@ const ProjectsBar = () => {
             }
 
         })
+
+         
 
     }
 

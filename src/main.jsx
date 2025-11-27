@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ModalProvider } from './context/ModalContext.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import ProtectRoute from './pages/ProtectRoute.jsx'
+import { ToastContainer } from 'react-toastify'
 const queryClient = new QueryClient()
 
 
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>
     <ModalProvider>
       <BrowserRouter>
+      <ToastContainer position="top-right" autoClose={3000} />
         <Routes>
           <Route path='/' element={<LoginPage/>}/>
           <Route path='/login' element={<LoginPage/>}/>

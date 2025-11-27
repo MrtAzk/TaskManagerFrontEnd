@@ -7,6 +7,7 @@ import { AiOutlinePlus } from 'react-icons/ai';
 import CreateModalTask from "../modal/CreateModalTask";
 import UpdateModalTask from "../modal/UpdateModalTask";
 import Confirmation from "../modal/Confirmation";
+import { toast } from "react-toastify";
 
 const ProjectTasks = () => {
 
@@ -15,53 +16,56 @@ const ProjectTasks = () => {
     const taskResults = useTasksQuery(projectId)
     const { data, isLoading, isError } = taskResults.findProjectTasks
     const tasks = data?.content
-    
+
 
     const useModalContext = useContext(ModalContext)
 
-    const handleCreateTask = () => {
+    const handleCreateTask = async () => {
         useModalContext.appear({
             title: "Task Ekle",
             modalContent: CreateModalTask
         })
+
 
     }
 
     const handleDeleteTask = (id) => {
 
 
-        const handleConfirm=(onConfirmModalId)=>{
+        const handleConfirm = async (onConfirmModalId) => {
 
             useModalContext.disAppear(onConfirmModalId)
 
-            taskResults.removeTask.mutateAsync({
-            taskId: id,
-            projectId: projectId // bunu yollama sebebim invalidate qury düzgün çalışsın diye 
-        })
+            await taskResults.removeTask.mutateAsync({
+                taskId: id,
+                projectId: projectId // bunu yollama sebebim invalidate qury düzgün çalışsın diye 
+            })
+            toast.success("Task silindi")
 
         }
 
 
         useModalContext.appear({
-            title:"Silme Onayı",
-            modalContent:Confirmation,
-            props:{
-                message:"Bu görevi silmek istediğinizden eminmisiniz",
-                onConfirm:handleConfirm,
-                onCancel:useModalContext.disAppear//referans gidecek sadece 
+            title: "Silme Onayı",
+            modalContent: Confirmation,
+            props: {
+                message: "Bu görevi silmek istediğinizden eminmisiniz",
+                onConfirm: handleConfirm,
+                onCancel: useModalContext.disAppear//referans gidecek sadece 
             }
 
         })
     }
 
-        const handleUpdateTask = (taskId) => {
+    const handleUpdateTask = (taskId) => {
         useModalContext.appear({
             title: "Task Güncelleme",
             modalContent: UpdateModalTask,
             props: {
-            taskIdToUpdate: taskId // Task'ın ID'sini prop olarak gönderdik
-        }
+                taskIdToUpdate: taskId // Task'ın ID'sini prop olarak gönderdik
+            }
         })
+        
 
 
     }
@@ -153,7 +157,7 @@ const ProjectTasks = () => {
                         </div>
                         <div className="flex items-center justify-center ml-4 gap-2">
                             <button className="text-white bg-red-500 hover:bg-red-600 font-semibold w-24 h-full rounded cursor-pointer  " onClick={() => handleDeleteTask(task.id)}>Sil</button>
-                            <button className="text-white bg-green-500 hover:bg-green-600 font-semibold w-24 h-full rounded cursor-pointer  " onClick={() =>handleUpdateTask(task.id)}>Düzenle</button>
+                            <button className="text-white bg-green-500 hover:bg-green-600 font-semibold w-24 h-full rounded cursor-pointer  " onClick={() => handleUpdateTask(task.id)}>Düzenle bitmedi</button>
                         </div>
                     </div>)
             })}

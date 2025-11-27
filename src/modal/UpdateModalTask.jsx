@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import * as yup from "yup";
 import { ModalContext } from '../context/ModalContext';
 import { useTasksQuery } from '../queries/useTasksQuery';
-import { useParams } from 'react-router-dom';
 import Confirmation from './Confirmation';
 
 
@@ -44,7 +43,7 @@ const UpdateModalTask = ({ modalId, taskIdToUpdate }) => {
 
 
 
-        const handleConfirm = () => {
+        const handleConfirm = async() => {
 
 
             // Orijinal veriyi bozmadan, tarihi güncelleyip yeni bir obje yapıyoruz
@@ -56,7 +55,8 @@ const UpdateModalTask = ({ modalId, taskIdToUpdate }) => {
             }
 
             useModalContext.disAppear(modalId)
-            addTask.mutateAsync(payload)
+            await addTask.mutateAsync(payload)
+            oast.success("Task güncellendi")
             reset();
 
         }
