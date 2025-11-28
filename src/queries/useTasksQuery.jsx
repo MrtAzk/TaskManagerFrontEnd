@@ -1,14 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createTask, deleteTask, getTask, listTask } from "../services/taskMethod";
 
-export const useTasksQuery =(projectId)=>{
+export const useTasksQuery =(projectId,currentpage,pageSize)=>{
 
     const queryClient=useQueryClient();
 
     const findProjectTasks=useQuery({
-        queryKey:["tasks",projectId],
+        queryKey:["tasks",projectId,currentpage, pageSize],
         queryFn:async()=>{
-            const res= await listTask({ projectId: projectId });//request paramdadan değişken olarak bekliyor diye böyle nesne yaptım
+            const res= await listTask({ projectId: projectId,page:currentpage,pageSize:pageSize });//request paramdadan değişken olarak bekliyor diye böyle nesne yaptım
             return res 
         },
         enabled: !!projectId,
