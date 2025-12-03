@@ -1,7 +1,10 @@
 import axios from "axios";
 
 export const instance =axios.create({
-    baseURL:"http://localhost:8080"
+    baseURL:"http://localhost:8080",
+    // 🚀 KRİTİK EKLEME: Bu, tarayıcıya çerezleri (JWT token dahil) 
+    // Cross-Origin isteğiyle birlikte göndermesini söyler.
+    withCredentials: true
 });
 // 💡 Interceptor (Kesici) Ekleme
 instance.interceptors.request.use(

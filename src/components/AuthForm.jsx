@@ -29,7 +29,7 @@ const AuthForm = ({ isSignup }) => {
         try {
             const responseData = await mutation.mutateAsync(data);
 
-            if (!isSignup && responseData?.token) {
+            if (!isSignup ) {//Bu yok (responseData?.token) bu cookisden geliyor çünkü resposedata içinde token boş döner backende 
                 toast.success(`Hoş geldiniz, ${responseData.username}!`)
 
                 navigate('/projects');

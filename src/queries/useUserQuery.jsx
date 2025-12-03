@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { data } from "react-router-dom";
-import { logUser, saveUser } from "../services/userMethod";
+import { getCurrentUser, logUser, saveUser } from "../services/userMethod";
 
 export const useUserQuery = () => {
     const queryClient = useQueryClient();
@@ -22,15 +22,21 @@ export const useUserQuery = () => {
         },
         onSuccess: (responseData) => {
             console.log("Login Başarılı! Response:", responseData);
-            if (responseData && responseData.token) {
-                // 1. JWT Token'ı KALICI olarak kaydet!
-                localStorage.setItem('jwtToken', responseData.token);
-            }
         },
         onError: (error) => {
             // Hata yönetimini burada yap (UI'da göstermek için)
             console.error("Login hatası:", error);
         }
+        
     })
-    return { addUser, loginUser }
+    const findCurrentUser = useQuery({
+
+    queryKey: ["authStatus"],
+
+    queryFn: getCurrentUser,
+
+    retry: false, // Başarısız olursa otomatik tekrar denemesin
+    refetchOnWindowFocus: false, // Pencere focus olduğunda tekrar sorgulamasın
+  });
+    return { addUser, loginUser,findCurrentUser }
 }

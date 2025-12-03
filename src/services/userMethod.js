@@ -1,7 +1,10 @@
 import axios from "axios";
 
 export const instance =axios.create({
-    baseURL:"http://localhost:8080"
+    baseURL:"http://localhost:8080",
+    // 🚀 KRİTİK EKLEME: Bu, tarayıcıya çerezleri (JWT token dahil) 
+    // Cross-Origin isteğiyle birlikte göndermesini söyler.
+    withCredentials: true
 });
 
 export const saveUser=async(val)=>{
@@ -21,4 +24,15 @@ export const logUser=async(val)=>{
         console.log("Kullanıcı giriş yaparken hata oluştu",error.response?.data || error.message)
         throw error
     }
+    
 }
+
+export const getCurrentUser = async () => {
+  try {
+    const res = await instance.get("/v1/auth/me", { withCredentials: true });
+    return res.data;
+  } catch (error) {
+    console.error("Kullanıcı bilgisi çekilemedi:", error);
+    throw error;
+  }
+};
